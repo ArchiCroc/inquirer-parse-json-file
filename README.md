@@ -1,43 +1,42 @@
-# inquirer-file-path
+# inquirer-parse-json-file
 
-Relative File Path prompt for [inquirer](https://github.com/SBoudrias/Inquirer.js)
+Json File prompt for [inquirer](https://github.com/SBoudrias/Inquirer.js)
 
-[![Build Status](https://travis-ci.org/bmbarker90/inquirer-file-path.svg)](https://travis-ci.org/bmbarker90/inquirer-file-path)
+Parses the JSON file and returns the object as it's answer.
 
 ## Installation
 
 ```
-npm install --save inquirer-file-path
+npm install --save inquirer-parse-json-file
 ```
 
 ## Features
+
 - Support for symlinked files
 - Vim style navigation
-- Search for file with `/` key
 
 ### Key Maps
-- Press `/` key to enter search mode.
+
 - Use either `up`/`down` arrow keys or `k`/`j` to navigate
 - Use `enter` to select option
 
 ## Usage
 
-
 This prompt is anonymous, meaning you can register this prompt with the type name you please:
 
 ```javascript
-inquirer.registerPrompt('filePath', require('inquirer-file-path'));
+inquirer.registerPrompt('jsonFile', require('inquirer-parse-json-file'));
 inquirer.prompt({
-  type: 'filePath',
+  type: 'jsonFile',
   ...
 })
 ```
 
-Change `filePath` to whatever you might prefer.
+Change `jsonFile` to whatever you might prefer.
 
 ### Options
 
-Takes `type`, `name`, `message`, `basePath` properties.
+Takes `type`, `name`, `message`, `filter`, `basePath` properties.
 
 See [inquirer](https://github.com/SBoudrias/Inquirer.js) readme for meaning of all except **basePath**.
 
@@ -46,20 +45,25 @@ See [inquirer](https://github.com/SBoudrias/Inquirer.js) readme for meaning of a
 #### Example
 
 ```javascript
-inquirer.registerPrompt('filePath', require('inquirer-file-path'));
-inquirer.prompt([{
-  type: 'file',
-  name: 'from',
-  message: 'Where you like to put this component?',
-  basePath: './src'
-}]).then(function(answers) {
-  // (answers.from is the path chosen)
-});
+inquirer.registerPrompt("jsonFile", require("inquirer-parse-json-file"));
+inquirer
+  .prompt([
+    {
+      type: "jsonFile",
+      name: "json",
+      message: "Select a json file?",
+      basePath: "./src"
+    }
+  ])
+  .then(function(answers) {
+    // (answers.from is the path chosen)
+  });
 ```
 
-See also [example.js](https://github.com/bmbarker/inquirer-file-path-path/blob/master/example.js) for a working example
+See also [example.js](https://github.com/archicroc/inquirer-parse-json-file-path/blob/master/example.js) for a working example
 
 ## Contributing
+
 <a name="contributing"></a>
 
 **Unit test**
@@ -73,7 +77,9 @@ Add documentation for every API change. Feel free to send typo fixes and better 
 MIT
 
 ## Acknowledgements
-A huge thank you to Nick Randall and the other contributors of https://github.com/nicksrandall/inquirer-directory.
+
+Thanks to bmbarker90 and their inquirer-file-path repo that this is adapted from.
 
 ## Future features
-- [ ] Add ability to config to filter options shown
+
+- none. Have an Idea? Submit a Feature Request.
