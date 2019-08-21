@@ -16,7 +16,6 @@ var Separator = require("inquirer/lib/objects/separator");
 var { filter, map, mergeMap, scan, share, takeUntil, tap, merge } = require("rxjs/operators");
 
 var path = require("path");
-var fs = require("fs");
 
 /**
  * Constants
