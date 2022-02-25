@@ -1,6 +1,6 @@
 {
   "name": "inquirer-parse-json-file",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A selector for Inquirer.js to pick a JSON file and return the Javascript object",
   "main": "index.js",
   "type": "module",
