@@ -1,7 +1,7 @@
-var EventEmitter = require('events').EventEmitter;
-var sinon = require('sinon');
-var util = require('util');
-var _ = require('lodash');
+import { EventEmitter } from "events";
+import sinon from "sinon";
+import util from "util";
+import _ from "lodash";
 
 var stub = {};
 
@@ -14,21 +14,21 @@ _.assign(stub, {
   resume: sinon.stub().returns(stub),
   _getCursorPos: sinon.stub().returns({
     cols: 0,
-    rows: 0
+    rows: 0,
   }),
   output: {
     end: sinon.stub(),
     mute: sinon.stub(),
     unmute: sinon.stub(),
-    __raw__: '',
-    write: function(str) {
+    __raw__: "",
+    write: function (str) {
       this.__raw__ += str;
-    }
-  }
+    },
+  },
 });
 
-var ReadlineStub = function() {
-  this.line = '';
+var ReadlineStub = function () {
+  this.line = "";
   this.input = new EventEmitter();
   EventEmitter.apply(this, arguments);
 };
@@ -36,4 +36,4 @@ var ReadlineStub = function() {
 util.inherits(ReadlineStub, EventEmitter);
 _.assign(ReadlineStub.prototype, stub);
 
-module.exports = ReadlineStub;
+export default ReadlineStub;

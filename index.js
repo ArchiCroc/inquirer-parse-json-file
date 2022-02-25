@@ -1,21 +1,30 @@
 /**
  * `directory` type prompt
  */
-var rx = require("rxjs");
-var _ = require("lodash");
-var util = require("util");
-var fs = require("fs");
-var chalk = require("chalk");
-var figures = require("figures");
-var cliCursor = require("cli-cursor");
-var Base = require("inquirer/lib/prompts/base");
-var observe = require("inquirer/lib/utils/events");
-var Paginator = require("inquirer/lib/utils/paginator");
-var Choices = require("inquirer/lib/objects/choices");
-var Separator = require("inquirer/lib/objects/separator");
-var { filter, map, mergeMap, scan, share, takeUntil, tap, merge } = require("rxjs/operators");
-
-var path = require("path");
+import rx from "rxjs";
+import _ from "lodash";
+import util from "util";
+import fs from "fs";
+import chalk from "chalk";
+import figures from "figures";
+import cliCursor from "cli-cursor";
+import path from "path";
+import { parse } from "comment-json";
+import Base from "inquirer/lib/prompts/base.js";
+import observe from "inquirer/lib/utils/events.js";
+import Paginator from "inquirer/lib/utils/paginator.js";
+import Choices from "inquirer/lib/objects/choices.js";
+import Separator from "inquirer/lib/objects/separator.js";
+import {
+  filter,
+  map,
+  mergeMap,
+  scan,
+  share,
+  takeUntil,
+  tap,
+  merge,
+} from "rxjs/operators";
 
 /**
  * Constants
@@ -40,7 +49,10 @@ class Prompt extends Base {
     this.currentPath = this.basePath;
 
     this.opt.fileExtensionFilter = ".json";
-    this.opt.choices = new Choices(this.createChoices(this.basePath, 0), this.answers);
+    this.opt.choices = new Choices(
+      this.createChoices(this.basePath, 0),
+      this.answers
+    );
     this.selected = 0;
 
     this.firstRender = true;
@@ -67,15 +79,17 @@ class Prompt extends Base {
     var events = observe(self.rl);
 
     var keyUps = events.keypress.pipe(
-      filter(function(e) {
+      filter(function (e) {
         return e.key.name === "up" || (!self.searchMode && e.key.name === "k");
       }),
       share()
     );
 
     var keyDowns = events.keypress.pipe(
-      filter(function(e) {
-        return e.key.name === "down" || (!self.searchMode && e.key.name === "j");
+      filter(function (e) {
+        return (
+          e.key.name === "down" || (!self.searchMode && e.key.name === "j")
+        );
       }),
       share()
     );
@@ -88,7 +102,7 @@ class Prompt extends Base {
     // );
 
     var alphaNumeric = events.keypress.pipe(
-      filter(function(e) {
+      filter(function (e) {
         return e.key.name === "backspace" || alphaNumericRegex.test(e.value);
       }),
       share()
@@ -135,7 +149,9 @@ class Prompt extends Base {
     outcome.traversal.forEach(this.handleTraversal.bind(this));
     keyUps.pipe(takeUntil(outcome.done)).forEach(this.onUpKey.bind(this));
     keyDowns.pipe(takeUntil(outcome.done)).forEach(this.onDownKey.bind(this));
-    events.keypress.pipe(takeUntil(outcome.done)).forEach(this.hideKeyPress.bind(this));
+    events.keypress
+      .pipe(takeUntil(outcome.done))
+      .forEach(this.hideKeyPress.bind(this));
     //searchTerm.pipe(takeUntil(outcome.done)).forEach(this.onKeyPress.bind(this));
 
     // Init the prompt
@@ -163,9 +179,15 @@ class Prompt extends Base {
     if (this.status === "answered") {
       message += chalk.cyan(relativePath);
     } else {
-      message += chalk.bold("\n Current directory: ") + this.opt.basePath + "/" + chalk.cyan(relativePath);
+      message +=
+        chalk.bold("\n Current directory: ") +
+        this.opt.basePath +
+        "/" +
+        chalk.cyan(relativePath);
       var choicesStr = listRender(this.opt.choices, this.selected);
-      message += "\n" + this.paginator.paginate(choicesStr, this.selected, this.opt.pageSize);
+      message +=
+        "\n" +
+        this.paginator.paginate(choicesStr, this.selected, this.opt.pageSize);
 
       // append search mode info
       // if (this.searchMode) {
@@ -186,10 +208,10 @@ class Prompt extends Base {
   handleSubmit(e) {
     var self = this;
     var obx = e.pipe(
-      map(function() {
+      map(function () {
         return self.opt.choices.getChoice(self.selected).value;
       }),
-      scan(function(stack, curr) {
+      scan(function (stack, curr) {
         var isBack = curr === BACK;
         var depth = stack.length;
 
@@ -207,13 +229,13 @@ class Prompt extends Base {
     );
 
     var done = obx.pipe(
-      filter(function(stack) {
+      filter(function (stack) {
         return isFile(getAbsolutePath(self.basePath, stack));
       })
     );
 
     var traversal = obx.pipe(
-      filter(function(stack) {
+      filter(function (stack) {
         return !isFile(getAbsolutePath(self.basePath, stack));
       }),
       takeUntil(done)
@@ -221,7 +243,7 @@ class Prompt extends Base {
 
     return {
       traversal: traversal,
-      done: done
+      done: done,
     };
   }
 
@@ -230,7 +252,10 @@ class Prompt extends Base {
    */
   handleTraversal(value) {
     this.currentPath = getAbsolutePath(this.basePath, value);
-    this.opt.choices = new Choices(this.createChoices(this.currentPath, value.length), this.answers);
+    this.opt.choices = new Choices(
+      this.createChoices(this.currentPath, value.length),
+      this.answers
+    );
     this.selected = 0;
     this.render();
   }
@@ -248,7 +273,7 @@ class Prompt extends Base {
     cliCursor.show();
 
     const file = fs.readFileSync(this.currentPath, "utf8");
-    let object = JSON.parse(file);
+    let object = parse(file);
     if (_.isFunction(this.opt.filter)) {
       object = this.opt.filter(object);
     }
@@ -324,10 +349,13 @@ class Prompt extends Base {
   getOptions(basePath) {
     return fs
       .readdirSync(basePath)
-      .filter(file => {
+      .filter((file) => {
         var stats = fs.lstatSync(path.join(basePath, file));
 
-        if (stats.isFile() && !file.toLowerCase().endsWith(this.opt.fileExtensionFilter)) {
+        if (
+          stats.isFile() &&
+          !file.toLowerCase().endsWith(this.opt.fileExtensionFilter)
+        ) {
           return false;
         }
 
@@ -344,7 +372,7 @@ class Prompt extends Base {
  * Module exports
  */
 
-module.exports = Prompt;
+export default Prompt;
 
 /**
  * Function for rendering list choices
@@ -355,7 +383,7 @@ function listRender(choices, pointer) {
   var output = "";
   var separatorOffset = 0;
 
-  choices.forEach(function(choice, i) {
+  choices.forEach(function (choice, i) {
     if (choice.type === "separator") {
       separatorOffset++;
       output += "  " + choice + "\n";
@@ -385,7 +413,10 @@ function getAbsolutePath(basePath, choices) {
 }
 
 function getRelativePath(basePathOption, baseAbsolutePath, choices) {
-  return path.relative(basePathOption, getAbsolutePath(baseAbsolutePath, choices));
+  return path.relative(
+    basePathOption,
+    getAbsolutePath(baseAbsolutePath, choices)
+  );
 }
 
 function isFile(filePath) {

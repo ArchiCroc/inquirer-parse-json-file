@@ -3,8 +3,10 @@
  */
 
 "use strict";
-var inquirer = require("inquirer");
-inquirer.registerPrompt("filePath", require("./index"));
+import inquirer from "inquirer";
+import InquirerParseJsonFiles from "./index.js";
+
+inquirer.registerPrompt("filePath", InquirerParseJsonFiles);
 
 inquirer
   .prompt([
@@ -12,9 +14,9 @@ inquirer
       type: "filePath",
       name: "path",
       message: "What JSON file would you like to load?",
-      basePath: "./test"
-    }
+      basePath: "./test",
+    },
   ])
-  .then(answers => {
+  .then((answers) => {
     console.log("[result]", JSON.stringify(answers, null, "  "));
   });
