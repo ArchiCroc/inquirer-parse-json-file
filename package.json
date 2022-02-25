@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A selector for Inquirer.js to pick a JSON file and return the Javascript object",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "node_modules/.bin/_mocha test/spec",
     "preversion": "npm test",
@@ -25,19 +26,20 @@
   },
   "homepage": "https://github.com/archicroc/inquirer-parse-json-file#readme",
   "dependencies": {
-    "chalk": "^2.4.0",
-    "cli-cursor": "^3.1.0",
-    "figures": "^3.0.0",
-    "inquirer": "^6.5.1",
-    "lodash": "^4.17.15",
-    "rxjs": "^6.4.0",
-    "util": "^0.12.1"
+    "chalk": "^5.0.0",
+    "cli-cursor": "^4.0.0",
+    "comment-json": "^4.2.2",
+    "figures": "^4.0.0",
+    "inquirer": "^8.2.0",
+    "lodash": "^4.17.21",
+    "rxjs": "^7.5.4",
+    "util": "^0.12.4"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "events": "^3.0.0",
-    "mocha": "^6.2.0",
-    "mock-fs": "^4.10.0",
-    "sinon": "^7.4.0"
+    "chai": "^4.3.6",
+    "events": "^3.3.0",
+    "mocha": "^9.2.1",
+    "mock-fs": "^5.1.2",
+    "sinon": "^13.0.1"
   }
 }

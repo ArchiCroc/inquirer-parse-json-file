@@ -14,6 +14,7 @@ npm install --save inquirer-parse-json-file
 
 - Support for symlinked files
 - Vim style navigation
+- Support for parsing JSON files with comments now!
 
 ### Key Maps
 
@@ -52,10 +53,10 @@ inquirer
       type: "jsonFile",
       name: "json",
       message: "Select a json file?",
-      basePath: "./src"
-    }
+      basePath: "./src",
+    },
   ])
-  .then(function(answers) {
+  .then(function (answers) {
     // (answers.from is the path chosen)
   });
 ```
