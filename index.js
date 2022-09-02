@@ -48,7 +48,7 @@ class Prompt extends Base {
       : path.resolve(process.cwd(), this.opt.basePath);
     this.currentPath = this.basePath;
 
-    this.opt.fileExtensionFilter = ".json";
+    this.opt.fileExtensionFilter = new RegExp(/\.jsonc?$/);
     this.opt.choices = new Choices(
       this.createChoices(this.basePath, 0),
       this.answers
@@ -354,7 +354,7 @@ class Prompt extends Base {
 
         if (
           stats.isFile() &&
-          !file.toLowerCase().endsWith(this.opt.fileExtensionFilter)
+          !file.toLowerCase().match(this.opt.fileExtensionFilter)
         ) {
           return false;
         }

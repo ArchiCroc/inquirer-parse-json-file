@@ -15,12 +15,12 @@ describe("inquirer-directory", function () {
       ".gitignore": "gitignore content",
       folder1: {
         "folder1-1": {},
-        "test2.json": '/*test*/{"test2": "string"}',
+        "test2.jsonc": '/*test*/{"test2": "string"}',
       },
       zfolder2: {
         "zfolder2-1": {},
       },
-      "index.js": "some js here",
+      "index.txt": "some js here",
       "test.json": '{"test": "string"}',
       "a-symlink": mock.symlink({
         path: "folder1",
@@ -73,7 +73,8 @@ describe("inquirer-directory", function () {
     prompt.run();
     enter();
     expect(rl.output.__raw__).to.contain("folder1-1");
-    expect(rl.output.__raw__).to.contain("test.js");
+    expect(rl.output.__raw__).to.contain("test.json");
+    expect(rl.output.__raw__).to.not.contain("index.txt");
   });
 
   it("should allow users to go back after drilling", function () {
